@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crypto Watch Panel</title>
+<title>Crypto Watch Panel v1.1</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -21,6 +21,24 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);padding:24px;min-height:100vh}
+
+/* ── Disclaimer ── */
+.disclaimer{
+  display:flex;align-items:flex-start;gap:10px;
+  background:#fffbeb;border:1px solid #fde68a;border-radius:8px;
+  padding:12px 16px;margin-bottom:18px;font-size:11px;
+  font-family:'IBM Plex Mono',monospace;color:#92400e;line-height:1.6;
+  position:relative;
+}
+.disclaimer strong{color:#78350f}
+.disc-close{
+  position:absolute;right:10px;top:10px;background:none;border:none;
+  cursor:pointer;color:#d97706;font-size:14px;line-height:1;padding:2px 6px;
+  border-radius:3px;transition:background .15s;
+}
+.disc-close:hover{background:#fef3c7}
+
+/* ── Header ── */
 header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;border-bottom:1px solid var(--border);padding-bottom:16px}
 .hl h1{font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
 .hl p{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
@@ -31,6 +49,8 @@ header{display:flex;align-items:flex-end;justify-content:space-between;margin-bo
 .btn-p{border-color:var(--accent);color:var(--accent);background:var(--green-light)}
 .btn-p:hover{background:var(--green-mid)}
 select{font-size:11px;font-family:'IBM Plex Mono',monospace;padding:8px 10px;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer;box-shadow:var(--shadow)}
+
+/* ── Status ── */
 .sb{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
 .dot{width:6px;height:6px;border-radius:50%;background:var(--dim);flex-shrink:0;transition:background .3s}
 .dot.live{background:var(--green);animation:pulse 2s infinite}
@@ -39,7 +59,8 @@ select{font-size:11px;font-family:'IBM Plex Mono',monospace;padding:8px 10px;bor
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .pt{height:2px;background:var(--border);border-radius:1px;margin-bottom:16px;overflow:hidden;display:none}
 .pf{height:100%;background:var(--accent);border-radius:1px;transition:width .3s;width:0%}
-/* Fear & Greed */
+
+/* ── Fear & Greed ── */
 .fng{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;box-shadow:var(--shadow);margin-bottom:16px;display:none;align-items:center;gap:20px;flex-wrap:wrap}
 .fng-main{display:flex;align-items:center;gap:14px}
 .fng-score{font-size:38px;font-weight:500;font-family:'IBM Plex Mono',monospace;line-height:1}
@@ -51,24 +72,34 @@ select{font-size:11px;font-family:'IBM Plex Mono',monospace;padding:8px 10px;bor
 .fng-labs{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
 .fng-sig{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;border-left:1px solid var(--border);padding-left:16px}
 .fng-sig strong{display:block;font-size:12px;color:var(--text);margin-bottom:2px}
-/* Summary */
+
+/* ── Summary cards ── */
 .sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
 .sc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;box-shadow:var(--shadow)}
 .sc .lb{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
 .sc .vl{font-size:20px;font-weight:500;font-family:'IBM Plex Mono',monospace}
-/* Table */
+.sc .vl-sm{font-size:13px;font-weight:500;font-family:'IBM Plex Mono',monospace;line-height:1.6}
+
+/* ── Table ── */
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
 table{width:100%;border-collapse:collapse;table-layout:fixed}
 thead tr{border-bottom:2px solid var(--border)}
 th{font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:10px 12px;text-align:left;background:var(--surface2)}
 td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
 tbody tr:last-child td{border-bottom:none}
-tr.row-buy  td{background:var(--green-row)} tr.row-buy:hover  td{background:var(--green-row-h)}
-tr.row-sell td{background:var(--red-row)}   tr.row-sell:hover td{background:var(--red-row-h)}
-tr.row-neutral td{background:var(--surface)} tr.row-neutral:hover td{background:var(--surface2)}
-tr.row-watch td{background:#fffdf0}          tr.row-watch:hover td{background:#fff9d6}
+
+/* ── Row colors ── */
+tr.row-buy      td{background:#f0fdf4} tr.row-buy:hover      td{background:#dcfce7}
+tr.row-buy-w    td{background:#f7fef9} tr.row-buy-w:hover    td{background:#ecfdf5}
+tr.row-sell     td{background:var(--red-row)} tr.row-sell:hover td{background:var(--red-row-h)}
+tr.row-neutral  td{background:var(--surface)} tr.row-neutral:hover td{background:var(--surface2)}
+tr.row-watch    td{background:#fffdf0} tr.row-watch:hover    td{background:#fff9d6}
+tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbeafe}
+
+/* ── Cell styles ── */
 .cn{font-weight:500;font-size:13px}
 .ct{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.cat-tag{display:inline-block;font-size:9px;font-family:'IBM Plex Mono',monospace;color:var(--dim);background:var(--surface2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;margin-top:3px;letter-spacing:.04em}
 .pu{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500}
 .pe{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-top:1px}
 .cp{font-family:'IBM Plex Mono',monospace;font-size:12px}
@@ -80,43 +111,82 @@ tr.row-watch td{background:#fffdf0}          tr.row-watch:hover td{background:#f
 .rf{height:5px;border-radius:2px;transition:width .4s;position:relative;z-index:1}
 .lb-bar{flex:1;height:5px;background:var(--border);border-radius:2px;animation:shimmer 1.5s infinite}
 @keyframes shimmer{0%{opacity:.4}50%{opacity:.9}100%{opacity:.4}}
-.badge{font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 7px;border-radius:3px;letter-spacing:.04em;font-weight:500;display:inline-block}
-.bb{background:#dcfce7;color:#15803d;border:1px solid #86efac}
-.bw{background:#fef9c3;color:#854d0e;border:1px solid #fde047}
-.bn{background:#f4f4f5;color:#52525b;border:1px solid #d4d4d8}
-.bs{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
-.bd{background:#f4f4f5;color:var(--dim);border:1px solid var(--border)}
+
+/* ── Signal badges ── */
+.badge{font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 7px;border-radius:3px;letter-spacing:.04em;font-weight:500;display:inline-block;white-space:nowrap}
+.bb-f{background:#14532d;color:#fff;border:1px solid #15803d}           /* COMPRA FUERTE */
+.bb  {background:#dcfce7;color:#15803d;border:1px solid #86efac}        /* COMPRA DÉBIL  */
+.bv  {background:#fef9c3;color:#854d0e;border:1px solid #fde047}        /* VIGILAR       */
+.bn  {background:#f4f4f5;color:#52525b;border:1px solid #d4d4d8}        /* NEUTRAL       */
+.bm  {background:#eff6ff;color:#1d4ed8;border:1px solid #93c5fd}        /* MANTENER      */
+.bs  {background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}        /* VENTA         */
+.bs-f{background:#7f1d1d;color:#fff;border:1px solid #991b1b}           /* VENTA FUERTE  */
+.bd  {background:#f4f4f5;color:var(--dim);border:1px solid var(--border)}/* sin datos    */
+
+/* ── Volume badges ── */
+.vbadge{font-size:9px;font-family:'IBM Plex Mono',monospace;padding:2px 6px;border-radius:3px;font-weight:500;display:block;width:fit-content;margin-top:4px;letter-spacing:.04em}
+.vb-a{background:#dcfce7;color:#15803d;border:1px solid #86efac}  /* ALTO  */
+.vb-m{background:#f4f4f5;color:#52525b;border:1px solid #d4d4d8}  /* MEDIO */
+.vb-b{background:#fef9c3;color:#854d0e;border:1px solid #fde047}  /* BAJO  */
+.vb-n{background:none;color:var(--dim);border:none}
+
+/* ── Legend & footer ── */
 .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
 .legend span{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace}
-.note{font-size:10px;color:var(--dim);margin-top:8px;font-family:'IBM Plex Mono',monospace}
+.note{font-size:10px;color:var(--dim);margin-top:8px;font-family:'IBM Plex Mono',monospace;line-height:1.6}
 .msg{text-align:center;padding:32px;font-size:13px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
 .spin{display:inline-block;animation:spin 1s linear infinite}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@media(max-width:640px){body{padding:12px}th,td{padding:7px 8px;font-size:12px}.sr{grid-template-columns:repeat(2,1fr)}.fng{flex-direction:column;align-items:flex-start}}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+  body{padding:12px}
+  th,td{padding:7px 8px;font-size:12px}
+  .sr{grid-template-columns:repeat(2,1fr)}
+  .fng{flex-direction:column;align-items:flex-start}
+  .disclaimer{font-size:10px}
+}
 </style>
 </head>
 <body>
 
+<!-- ══ DISCLAIMER ══ -->
+<div class="disclaimer" id="discBanner">
+  <span>⚠️</span>
+  <div>
+    <strong>Solo para uso informativo.</strong>
+    Las señales de este panel combinan RSI y volumen como referencia técnica.
+    <strong>No constituyen asesoramiento financiero</strong> ni recomendación de inversión.
+    Los mercados de criptomonedas son altamente volátiles. Invierte únicamente lo que estés dispuesto a perder y consulta siempre a un asesor cualificado.
+  </div>
+  <button class="disc-close" onclick="document.getElementById('discBanner').style.display='none'" title="Cerrar">✕</button>
+</div>
+
+<!-- ══ HEADER ══ -->
 <header>
   <div class="hl">
-    <h1>Crypto Watch Panel</h1>
+    <h1>Crypto Watch Panel <span style="opacity:.45;font-weight:400">v1.1</span></h1>
     <p id="lastUpdate">Sin datos — pulsa actualizar</p>
   </div>
   <div class="hr">
     <select id="filterSel" onchange="renderTable()">
-      <option value="all">Todas</option>
-      <option value="buy">Compra (RSI &lt;35)</option>
-      <option value="watch">Vigilar (RSI 35–50)</option>
-      <option value="neutral">Neutral (RSI 50–65)</option>
-      <option value="sell">Venta (RSI &gt;65)</option>
+      <option value="all">Todas las señales</option>
+      <option value="buy-strong">🟢 Compra fuerte</option>
+      <option value="buy">🟡 Compra débil</option>
+      <option value="neutral">⚪ Neutral / Vigilar</option>
+      <option value="hold">🔵 Mantener</option>
+      <option value="sell">🔴 Venta</option>
+      <option value="sell-strong">⛔ Venta fuerte</option>
     </select>
     <button class="btn btn-p" id="refreshBtn" onclick="loadData()">&#8635; Actualizar</button>
   </div>
 </header>
 
+<!-- ══ STATUS ══ -->
 <div class="sb"><div class="dot" id="dot"></div><span id="statusMsg">Listo</span></div>
 <div class="pt" id="pt"><div class="pf" id="pf"></div></div>
 
+<!-- ══ FEAR & GREED ══ -->
 <div class="fng" id="fng">
   <div class="fng-main">
     <div class="fng-score" id="fngScore">—</div>
@@ -135,92 +205,106 @@ tr.row-watch td{background:#fffdf0}          tr.row-watch:hover td{background:#f
   </div>
 </div>
 
+<!-- ══ SUMMARY CARDS ══ -->
 <div class="sr">
-  <div class="sc"><div class="lb">RSI promedio</div><div class="vl" id="sAvg">—</div></div>
-  <div class="sc"><div class="lb">En compra</div><div class="vl" style="color:var(--green)" id="sBuy">—</div></div>
-  <div class="sc"><div class="lb">En venta</div><div class="vl" style="color:var(--red)" id="sSell">—</div></div>
-  <div class="sc"><div class="lb">Progreso RSI</div><div class="vl" id="sProg">—</div></div>
+  <div class="sc">
+    <div class="lb">RSI promedio</div>
+    <div class="vl" id="sAvg">—</div>
+  </div>
+  <div class="sc">
+    <div class="lb">Señales compra</div>
+    <div class="vl-sm" style="color:var(--green)" id="sBuy">—</div>
+  </div>
+  <div class="sc">
+    <div class="lb">Señales venta</div>
+    <div class="vl-sm" style="color:var(--red)" id="sSell">—</div>
+  </div>
+  <div class="sc">
+    <div class="lb">Señales neutras</div>
+    <div class="vl-sm" style="color:var(--gray)" id="sNeutral">—</div>
+  </div>
+  <div class="sc">
+    <div class="lb">Vol. total 24h</div>
+    <div class="vl" id="sVol">—</div>
+  </div>
+  <div class="sc">
+    <div class="lb">Progreso RSI</div>
+    <div class="vl" id="sProg">—</div>
+  </div>
 </div>
 
+<!-- ══ TABLE ══ -->
 <div class="panel">
   <table>
     <thead>
       <tr>
-        <th style="width:17%">Activo</th>
-        <th style="width:15%">USD</th>
-        <th style="width:13%">EUR</th>
-        <th style="width:8%">24h</th>
-        <th style="width:27%">RSI 14 (diario)</th>
-        <th style="width:12%">Señal</th>
-        <th style="width:8%">Categoría</th>
+        <th style="width:18%">Activo</th>
+        <th style="width:14%">Precio</th>
+        <th style="width:7%">24h</th>
+        <th style="width:24%">RSI 14 (diario)</th>
+        <th style="width:15%">Vol. 24h</th>
+        <th style="width:22%">Señal combinada</th>
       </tr>
     </thead>
     <tbody id="tb">
-      <tr><td colspan="7" class="msg">Pulsa "Actualizar" para cargar los datos.</td></tr>
+      <tr><td colspan="6" class="msg">Pulsa "Actualizar" para cargar los datos.</td></tr>
     </tbody>
   </table>
 </div>
 
+<!-- ══ LEGEND ══ -->
 <div class="legend">
-  <span><span class="badge bb">COMPRA</span> RSI &lt;35 — fila verde</span>
-  <span><span class="badge bw">VIGILAR</span> RSI 35–50</span>
-  <span><span class="badge bn">NEUTRAL</span> RSI 50–65</span>
-  <span><span class="badge bs">VENTA</span> RSI &gt;65 — fila roja</span>
+  <span><span class="badge bb-f">COMPRA FUERTE</span> RSI &lt;35 + Volumen alto</span>
+  <span><span class="badge bb">COMPRA DÉBIL</span> RSI &lt;35 + Volumen bajo/medio</span>
+  <span><span class="badge bm">MANTENER</span> RSI &gt;65 + Volumen alto</span>
+  <span><span class="badge bs">VENTA</span> RSI &gt;65 + Volumen bajo/medio</span>
+  <span><span class="badge bs-f">VENTA FUERTE</span> RSI &gt;80</span>
 </div>
-<p class="note">RSI 14 con cierres diarios reales (método Wilder) · Fear & Greed: alternative.me · Datos: CryptoCompare · No es asesoramiento financiero</p>
+<p class="note">
+  RSI 14 con cierres diarios reales (método Wilder) · Volumen clasificado por percentil (BAJO / MEDIO / ALTO) relativo al conjunto ·
+  Fear &amp; Greed: alternative.me · Datos: CryptoCompare · <strong>No es asesoramiento financiero</strong>
+</p>
 
-<!-- CALCULADORA -->
+<!-- ══ CALCULADORA ══ -->
 <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
   <div style="font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;font-family:'IBM Plex Mono',monospace">Calculadora de orden de venta</div>
-
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 24px;box-shadow:var(--shadow)">
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;align-items:end">
-
       <div>
         <label style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;display:block;margin-bottom:6px">Precio de compra (USD)</label>
         <input id="cBuy" type="number" step="any" min="0" placeholder="Ej: 74500"
           style="width:100%;font-size:14px;font-family:'IBM Plex Mono',monospace;padding:10px 12px;border:1.5px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--text);outline:none"
           oninput="calcNow()">
       </div>
-
       <div>
         <label style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;display:block;margin-bottom:6px">Margen objetivo: <strong id="cMarginLbl" style="color:var(--accent)">5%</strong></label>
         <input id="cMargin" type="range" min="1" max="100" value="5" step="1" style="width:100%;margin-top:6px" oninput="document.getElementById('cMarginLbl').textContent=this.value+'%'; calcNow()">
       </div>
-
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button onclick="setMargin(5)"  style="flex:1;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer">5%</button>
         <button onclick="setMargin(10)" style="flex:1;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer">10%</button>
         <button onclick="setMargin(20)" style="flex:1;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer">20%</button>
         <button onclick="setMargin(50)" style="flex:1;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer">50%</button>
       </div>
-
     </div>
-
-    <!-- Resultado -->
     <div id="cResult" style="display:none;margin-top:20px;padding-top:18px;border-top:1px solid var(--border)">
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:16px">
-
         <div style="background:var(--green-light);border:1px solid #86efac;border-radius:8px;padding:14px 16px">
           <div style="font-size:10px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:6px">Precio de venta</div>
           <div id="cSellUSD" style="font-size:22px;font-weight:500;font-family:'IBM Plex Mono',monospace;color:var(--green)">—</div>
           <div id="cSellEUR" style="font-size:12px;color:var(--green);font-family:'IBM Plex Mono',monospace;margin-top:3px;opacity:.8">—</div>
         </div>
-
         <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px">
           <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:6px">Precio de compra</div>
           <div id="cBuyShow" style="font-size:22px;font-weight:500;font-family:'IBM Plex Mono',monospace">—</div>
           <div id="cBuyEUR" style="font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:3px">—</div>
         </div>
-
         <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px">
           <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:6px">Diferencia</div>
           <div id="cDiff" style="font-size:22px;font-weight:500;font-family:'IBM Plex Mono',monospace;color:var(--green)">—</div>
           <div id="cDiffEUR" style="font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:3px">—</div>
         </div>
-
       </div>
-
       <div style="padding:12px 16px;background:var(--green-light);border:1px solid #86efac;border-radius:6px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--green);line-height:1.6">
         En Coinbase Advanced → activo → <strong>Vender</strong> → <strong>Orden Límite</strong> → introducir precio: <strong id="cInstruct">—</strong>
       </div>
@@ -228,7 +312,9 @@ tr.row-watch td{background:#fffdf0}          tr.row-watch:hover td{background:#f
   </div>
 </div>
 
+<!-- ══ SCRIPTS ══ -->
 <script>
+/* ── Calculadora ── */
 function fmtUSD2(v) {
   if (!v) return "—";
   if (v >= 10000) return "$" + v.toLocaleString("es-ES", {maximumFractionDigits:0});
@@ -240,7 +326,7 @@ function fmtUSD2(v) {
 function fmtEUR2(v) {
   const rate = (function() {
     const btc = tableData.find(c => c.sym === "BTC");
-    return (btc && btc.priceUSD && btc.priceEUR) ? btc.priceEUR / btc.priceUSD : 0.849;
+    return (btc && btc.priceUSD && btc.priceEUR) ? btc.priceEUR / btc.priceUSD : 0.92;
   })();
   const e = v * rate;
   if (e >= 10000) return "≈ €" + e.toLocaleString("es-ES", {maximumFractionDigits:0});
@@ -249,23 +335,18 @@ function fmtEUR2(v) {
   if (e >= 0.01)  return "≈ €" + e.toFixed(6);
   return "≈ €" + e.toFixed(9);
 }
-
 function setMargin(v) {
   document.getElementById("cMargin").value = v;
   document.getElementById("cMarginLbl").textContent = v + "%";
   calcNow();
 }
-
 function calcNow() {
   const buy    = parseFloat(document.getElementById("cBuy").value);
   const margin = parseInt(document.getElementById("cMargin").value);
   const result = document.getElementById("cResult");
-
   if (!buy || buy <= 0 || isNaN(buy)) { result.style.display = "none"; return; }
-
   const sell = buy * (1 + margin / 100);
   const diff = sell - buy;
-
   document.getElementById("cSellUSD").textContent  = fmtUSD2(sell);
   document.getElementById("cSellEUR").textContent  = fmtEUR2(sell);
   document.getElementById("cBuyShow").textContent  = fmtUSD2(buy);
@@ -273,13 +354,12 @@ function calcNow() {
   document.getElementById("cDiff").textContent     = "+" + fmtUSD2(diff);
   document.getElementById("cDiffEUR").textContent  = "+" + fmtEUR2(diff);
   document.getElementById("cInstruct").textContent = fmtUSD2(sell);
-
   result.style.display = "block";
 }
 </script>
-<!-- FIN CALCULADORA -->
 
 <script>
+/* ── Datos ── */
 const COINS = [
   {sym:"BTC",    name:"Bitcoin",    tick:"BTC",  cat:"L1"},
   {sym:"ETH",    name:"Ethereum",   tick:"ETH",  cat:"L1"},
@@ -306,6 +386,7 @@ let tableData = [];
 const BASE = "https://min-api.cryptocompare.com/data";
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+/* ── RSI (método Wilder) ── */
 function calcRSI(closes) {
   if (!closes || closes.length < 15) return null;
   const s = closes.slice(-15);
@@ -319,13 +400,65 @@ function calcRSI(closes) {
   return Math.round(100-(100/(1+ag/al)));
 }
 
-function sig(r) {
-  if (r === null) return {l:"…",  c:"bd", row:""};
-  if (r < 35)    return {l:"COMPRA",  c:"bb", row:"row-buy"};
-  if (r < 50)    return {l:"VIGILAR", c:"bw", row:"row-watch"};
-  if (r < 65)    return {l:"NEUTRAL", c:"bn", row:"row-neutral"};
-  return             {l:"VENTA",  c:"bs", row:"row-sell"};
+/* ── Clasificación de volumen por percentil ── */
+function classifyVolumes() {
+  const vols = tableData.map(c => c.vol24h).filter(v => v > 0).sort((a,b) => a-b);
+  if (!vols.length) return;
+  const p33 = vols[Math.floor(vols.length * 0.33)];
+  const p66 = vols[Math.floor(vols.length * 0.66)];
+  tableData.forEach(c => {
+    if (!c.vol24h) { c.volClass = null; return; }
+    c.volClass = c.vol24h >= p66 ? "ALTO" : c.vol24h >= p33 ? "MEDIO" : "BAJO";
+  });
 }
+
+/* ── Señal combinada RSI + Volumen ── */
+function combinedSig(rsi, volClass) {
+  if (rsi === null) return {l:"…",           c:"bd",   row:"",          key:"pending"};
+  if (rsi > 80)     return {l:"VENTA FUERTE", c:"bs-f", row:"row-sell",  key:"sell-strong"};
+  if (rsi >= 65 && volClass === "ALTO")
+                    return {l:"MANTENER",     c:"bm",   row:"row-hold",  key:"hold"};
+  if (rsi >= 65)    return {l:"VENTA",        c:"bs",   row:"row-sell",  key:"sell"};
+  if (rsi < 35 && volClass === "ALTO")
+                    return {l:"COMPRA FUERTE",c:"bb-f", row:"row-buy",   key:"buy-strong"};
+  if (rsi < 35)     return {l:"COMPRA DÉBIL", c:"bb",   row:"row-buy-w", key:"buy"};
+  if (rsi < 50)     return {l:"VIGILAR",      c:"bv",   row:"row-watch", key:"neutral"};
+  return                   {l:"NEUTRAL",      c:"bn",   row:"row-neutral",key:"neutral"};
+}
+
+/* ── Formato precio ── */
+function fu(p) {
+  if (!p) return "—";
+  if (p >= 1000)   return "$"+p.toLocaleString("es-ES",{maximumFractionDigits:0});
+  if (p >= 1)      return "$"+p.toFixed(2);
+  if (p >= 0.01)   return "$"+p.toFixed(4);
+  if (p >= 0.0001) return "$"+p.toFixed(6);
+  return "$"+p.toFixed(9);
+}
+function fe(p) {
+  if (!p) return "—";
+  if (p >= 1000)   return "€"+p.toLocaleString("es-ES",{maximumFractionDigits:0});
+  if (p >= 1)      return "€"+p.toFixed(2);
+  if (p >= 0.01)   return "€"+p.toFixed(4);
+  if (p >= 0.0001) return "€"+p.toFixed(6);
+  return "€"+p.toFixed(9);
+}
+
+/* ── Formato volumen ── */
+function fvol(v) {
+  if (!v) return "—";
+  if (v >= 1e9) return "$"+(v/1e9).toFixed(2)+"B";
+  if (v >= 1e6) return "$"+(v/1e6).toFixed(0)+"M";
+  if (v >= 1e3) return "$"+(v/1e3).toFixed(0)+"K";
+  return "$"+v.toFixed(0);
+}
+function vbadge(vc) {
+  if (!vc) return '<span class="vbadge vb-n">—</span>';
+  const cls = vc==="ALTO" ? "vb-a" : vc==="MEDIO" ? "vb-m" : "vb-b";
+  return `<span class="vbadge ${cls}">${vc}</span>`;
+}
+
+/* ── Color barra RSI ── */
 function rc(r) {
   if (r === null) return "#ccc";
   if (r < 35) return "#16a34a";
@@ -333,28 +466,15 @@ function rc(r) {
   if (r < 65) return "#a1a1aa";
   return "#dc2626";
 }
-function fu(p) {
-  if (!p) return "—";
-  if (p >= 1000) return "$"+p.toLocaleString("es-ES",{maximumFractionDigits:0});
-  if (p >= 1)    return "$"+p.toFixed(2);
-  if (p >= 0.01) return "$"+p.toFixed(4);
-  if (p >= 0.0001) return "$"+p.toFixed(6);
-  return "$"+p.toFixed(9);
-}
-function fe(p) {
-  if (!p) return "—";
-  if (p >= 1000) return "€"+p.toLocaleString("es-ES",{maximumFractionDigits:0});
-  if (p >= 1)    return "€"+p.toFixed(2);
-  if (p >= 0.01) return "€"+p.toFixed(4);
-  if (p >= 0.0001) return "€"+p.toFixed(6);
-  return "€"+p.toFixed(9);
-}
+
+/* ── Status / progreso ── */
 function ss(m, state="") {
   document.getElementById("statusMsg").textContent = m;
   document.getElementById("dot").className = "dot"+(state?" "+state:"");
 }
 function sp(p) { document.getElementById("pf").style.width = p+"%"; }
 
+/* ── Fear & Greed ── */
 function renderFNG(value, classification) {
   const el = document.getElementById("fng");
   el.style.display = "flex";
@@ -374,52 +494,97 @@ function renderFNG(value, classification) {
   document.getElementById("fngAdvice").textContent = advice;
 }
 
+/* ── Summary cards ── */
 function upSum() {
   const w = tableData.filter(c => c.rsi !== null);
   if (!w.length) return;
-  document.getElementById("sAvg").textContent = Math.round(w.reduce((a,c)=>a+c.rsi,0)/w.length);
-  document.getElementById("sBuy").textContent = w.filter(c=>c.rsi<35).length;
-  document.getElementById("sSell").textContent = w.filter(c=>c.rsi>=65).length;
+
+  // RSI medio
+  document.getElementById("sAvg").textContent =
+    Math.round(w.reduce((a,c) => a+c.rsi, 0) / w.length);
+
+  // Señales combinadas
+  const sigs = w.map(c => combinedSig(c.rsi, c.volClass).key);
+  const nBuyS  = sigs.filter(s => s==="buy-strong").length;
+  const nBuyW  = sigs.filter(s => s==="buy").length;
+  const nSellS = sigs.filter(s => s==="sell-strong").length;
+  const nSell  = sigs.filter(s => s==="sell").length;
+  const nHold  = sigs.filter(s => s==="hold").length;
+  const nNeut  = sigs.filter(s => s==="neutral").length;
+
+  document.getElementById("sBuy").innerHTML =
+    `<span style="font-size:13px">●</span> Fuerte: <b>${nBuyS}</b> &nbsp;·&nbsp; Débil: <b>${nBuyW}</b>`;
+  document.getElementById("sSell").innerHTML =
+    `<span style="font-size:13px">●</span> Fuerte: <b>${nSellS}</b> &nbsp;·&nbsp; Normal: <b>${nSell}</b>`;
+  document.getElementById("sNeutral").innerHTML =
+    `Mantener: <b>${nHold}</b> &nbsp;·&nbsp; Neutral: <b>${nNeut}</b>`;
+
+  // Volumen total
+  const volTotal = tableData.reduce((a,c) => a+(c.vol24h||0), 0);
+  document.getElementById("sVol").textContent = fvol(volTotal);
+
+  // Progreso
   document.getElementById("sProg").textContent = w.length+"/"+COINS.length;
 }
 
+/* ── Render tabla ── */
 function renderTable() {
-  const f = document.getElementById("filterSel").value;
+  const f  = document.getElementById("filterSel").value;
   const tb = document.getElementById("tb");
+
   const rows = tableData.filter(c => {
-    if (f==="buy")     return c.rsi!==null && c.rsi<35;
-    if (f==="watch")   return c.rsi!==null && c.rsi>=35 && c.rsi<50;
-    if (f==="neutral") return c.rsi!==null && c.rsi>=50 && c.rsi<65;
-    if (f==="sell")    return c.rsi!==null && c.rsi>=65;
-    return true;
+    if (f === "all") return true;
+    return combinedSig(c.rsi, c.volClass).key === f;
   });
+
   if (!rows.length) {
-    tb.innerHTML='<tr><td colspan="7" class="msg">Ninguna cripto en esta zona.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="6" class="msg">Ninguna cripto con esta señal en este momento.</td></tr>';
+    upSum();
     return;
   }
+
   tb.innerHTML = rows.map(c => {
-    const s = sig(c.rsi), col = rc(c.rsi);
-    const cc = c.chg>0.05?"pos":c.chg<-0.05?"neg":"neu";
-    const cs = (c.chg>=0?"+":"")+c.chg.toFixed(2)+"%";
+    const s   = combinedSig(c.rsi, c.volClass);
+    const col = rc(c.rsi);
+    const cc  = c.chg > 0.05 ? "pos" : c.chg < -0.05 ? "neg" : "neu";
+    const cs  = (c.chg >= 0 ? "+" : "") + c.chg.toFixed(2) + "%";
+
     const rsiBar = c.rsi !== null
-      ? `<div class="rt"><div class="rz"></div><div class="rf" style="width:${c.rsi}%;background:${col}"></div></div>`
+      ? `<div class="rt">
+           <div class="rz"></div>
+           <div class="rf" style="width:${c.rsi}%;background:${col}"></div>
+         </div>`
       : `<div class="lb-bar" style="flex:1"></div>`;
+
     return `<tr class="${s.row}">
-      <td><div class="cn">${c.name}</div><div class="ct">${c.tick}</div></td>
-      <td><div class="pu">${fu(c.priceUSD)}</div></td>
-      <td><div class="pe">${fe(c.priceEUR)}</div></td>
+      <td>
+        <div class="cn">${c.name}</div>
+        <div class="ct">${c.tick}</div>
+        <span class="cat-tag">${c.cat}</span>
+      </td>
+      <td>
+        <div class="pu">${fu(c.priceUSD)}</div>
+        <div class="pe">${fe(c.priceEUR)}</div>
+      </td>
       <td><span class="cp ${cc}">${cs}</span></td>
-      <td><div class="rw">
-        <span class="rn" style="color:${col}">${c.rsi!==null?c.rsi:"…"}</span>
-        ${rsiBar}
-      </div></td>
+      <td>
+        <div class="rw">
+          <span class="rn" style="color:${col}">${c.rsi !== null ? c.rsi : "…"}</span>
+          ${rsiBar}
+        </div>
+      </td>
+      <td>
+        <div class="pu" style="font-size:12px">${fvol(c.vol24h)}</div>
+        ${vbadge(c.volClass)}
+      </td>
       <td><span class="badge ${s.c}">${s.l}</span></td>
-      <td style="font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace">${c.cat}</td>
     </tr>`;
   }).join("");
+
   upSum();
 }
 
+/* ── Carga principal ── */
 async function loadData() {
   const btn = document.getElementById("refreshBtn");
   const pt  = document.getElementById("pt");
@@ -434,14 +599,14 @@ async function loadData() {
       const fr = await fetch("https://api.alternative.me/fng/?limit=1");
       const fd = await fr.json();
       renderFNG(fd.data[0].value, fd.data[0].value_classification);
-    } catch {}
+    } catch(e) { console.warn("F&G:", e); }
     sp(8);
 
-    // Precios USD+EUR — una llamada
-    ss("Obteniendo precios...", "loading");
-    const syms = COINS.map(c=>c.sym).join(",");
+    // Precios + Volumen (una sola llamada)
+    ss("Obteniendo precios y volumen...", "loading");
+    const syms = COINS.map(c => c.sym).join(",");
     const pr = await fetch(`${BASE}/pricemultifull?fsyms=${syms}&tsyms=USD,EUR`);
-    if (!pr.ok) throw new Error("Error precios: "+pr.status);
+    if (!pr.ok) throw new Error("Error precios: " + pr.status);
     const pd = await pr.json();
     const raw = pd.RAW || {};
     sp(18);
@@ -451,46 +616,52 @@ async function loadData() {
       const e = raw[c.sym]?.EUR || {};
       return {
         name:c.name, tick:c.tick, sym:c.sym, cat:c.cat,
-        priceUSD: u.PRICE||0,
-        priceEUR: e.PRICE||0,
-        chg: u.CHANGEPCT24HOUR||0,
-        rsi: null
+        priceUSD: u.PRICE            || 0,
+        priceEUR: e.PRICE            || 0,
+        chg:      u.CHANGEPCT24HOUR  || 0,
+        vol24h:   u.VOLUME24HOURTO   || 0,
+        volClass: null,
+        rsi:      null
       };
     });
+
+    // Clasificar volúmenes relativos al conjunto
+    classifyVolumes();
     renderTable();
 
-    // RSI secuencial estricto — una a una
+    // RSI secuencial (una petición por moneda)
     for (let i = 0; i < COINS.length; i++) {
       const coin = COINS[i];
       ss(`RSI ${coin.name} (${i+1} de ${COINS.length})...`, "loading");
-      sp(18 + Math.round((i/COINS.length)*78));
+      sp(18 + Math.round((i / COINS.length) * 78));
       try {
         const r = await fetch(`${BASE}/v2/histoday?fsym=${coin.sym}&tsym=USD&limit=15`);
         if (r.ok) {
           const d = await r.json();
-          const closes = (d.Data?.Data||[]).map(x=>x.close).filter(v=>v>0);
+          const closes = (d.Data?.Data || []).map(x => x.close).filter(v => v > 0);
           if (closes.length >= 15) tableData[i].rsi = calcRSI(closes);
         }
-      } catch {}
+      } catch(e) { console.warn("RSI", coin.sym, e); }
       renderTable();
-      if (i < COINS.length-1) await sleep(350);
+      if (i < COINS.length - 1) await sleep(350);
     }
 
     sp(100);
     const now = new Date();
-    const ts = now.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
-    ss("Actualizado a las "+ts, "live");
+    const ts = now.toLocaleTimeString("es-ES", {hour:"2-digit", minute:"2-digit"});
+    ss("Actualizado a las " + ts, "live");
     document.getElementById("lastUpdate").textContent =
-      "Última actualización: "+ts+" · "+now.toLocaleDateString("es-ES");
-    setTimeout(()=>{ pt.style.display="none"; sp(0); }, 600);
+      "Última actualización: " + ts + " · " + now.toLocaleDateString("es-ES");
+    setTimeout(() => { pt.style.display = "none"; sp(0); }, 600);
 
   } catch(e) {
-    ss("Error: "+e.message, "err");
+    ss("Error: " + e.message, "err");
     if (!tableData.length)
       document.getElementById("tb").innerHTML =
-        `<tr><td colspan="7" class="msg" style="color:var(--red)">${e.message}<br>
+        `<tr><td colspan="6" class="msg" style="color:var(--red)">${e.message}<br>
         <small style="color:var(--muted)">Comprueba tu conexión e inténtalo de nuevo.</small></td></tr>`;
   }
+
   btn.disabled = false;
   btn.innerHTML = "&#8635; Actualizar";
 }
