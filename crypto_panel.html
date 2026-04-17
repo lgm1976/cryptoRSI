@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Watch Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f4f0;--surface:#fff;--surface2:#f8f8f5;
+  --border:#e2e2dc;--border2:#c8c8c0;
+  --text:#1a1a18;--muted:#888880;--dim:#bbbbb0;
+  --green:#15803d;--green-light:#f0fdf4;--green-mid:#dcfce7;
+  --green-row:#f0fdf4;--green-row-h:#dcfce7;
+  --amber:#92400e;--amber-light:#fffbeb;
+  --gray:#52525b;--gray-light:#fafaf9;
+  --red:#991b1b;--red-light:#fef2f2;--red-mid:#fecaca;
+  --red-row:#fef2f2;--red-row-h:#fecaca;
+  --accent:#15803d;
+  --shadow:0 1px 3px rgba(0,0,0,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);padding:24px;min-height:100vh}
+header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;border-bottom:1px solid var(--border);padding-bottom:16px}
+.hl h1{font-size:11px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin-bottom:3px}
+.hl p{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.hr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{cursor:pointer;padding:8px 16px;font-size:11px;font-family:'IBM Plex Mono',monospace;letter-spacing:.05em;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);transition:all .15s;box-shadow:var(--shadow)}
+.btn:hover{background:var(--surface2);border-color:var(--accent);color:var(--accent)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-p{border-color:var(--accent);color:var(--accent);background:var(--green-light)}
+.btn-p:hover{background:var(--green-mid)}
+select{font-size:11px;font-family:'IBM Plex Mono',monospace;padding:8px 10px;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer;box-shadow:var(--shadow)}
+.sb{display:flex;align-items:center;gap:8px;margin-bottom:14px;font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--dim);flex-shrink:0;transition:background .3s}
+.dot.live{background:var(--green);animation:pulse 2s infinite}
+.dot.loading{background:#d97706}
+.dot.err{background:var(--red)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.pt{height:2px;background:var(--border);border-radius:1px;margin-bottom:16px;overflow:hidden;display:none}
+.pf{height:100%;background:var(--accent);border-radius:1px;transition:width .3s;width:0%}
+/* Fear & Greed */
+.fng{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;box-shadow:var(--shadow);margin-bottom:16px;display:none;align-items:center;gap:20px;flex-wrap:wrap}
+.fng-main{display:flex;align-items:center;gap:14px}
+.fng-score{font-size:38px;font-weight:500;font-family:'IBM Plex Mono',monospace;line-height:1}
+.fng-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:500}
+.fng-sub{font-size:11px;color:var(--muted);margin-top:3px;font-family:'IBM Plex Mono',monospace}
+.fng-bar-wrap{flex:1;min-width:180px}
+.fng-track{height:8px;border-radius:4px;background:linear-gradient(to right,#dc2626,#ea580c,#ca8a04,#16a34a,#15803d);position:relative;margin-bottom:4px}
+.fng-cursor{width:10px;height:14px;background:var(--text);border-radius:2px;position:absolute;top:-3px;transform:translateX(-50%);transition:left .5s}
+.fng-labs{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;letter-spacing:.04em}
+.fng-sig{font-size:11px;color:var(--muted);font-family:'IBM Plex Mono',monospace;border-left:1px solid var(--border);padding-left:16px}
+.fng-sig strong{display:block;font-size:12px;color:var(--text);margin-bottom:2px}
+/* Summary */
+.sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:16px}
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;box-shadow:var(--shadow)}
+.sc .lb{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.sc .vl{font-size:20px;font-weight:500;font-family:'IBM Plex Mono',monospace}
+/* Table */
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+thead tr{border-bottom:2px solid var(--border)}
+th{font-size:10px;font-family:'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:10px 12px;text-align:left;background:var(--surface2)}
+td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text)}
+tbody tr:last-child td{border-bottom:none}
+tr.row-buy  td{background:var(--green-row)} tr.row-buy:hover  td{background:var(--green-row-h)}
+tr.row-sell td{background:var(--red-row)}   tr.row-sell:hover td{background:var(--red-row-h)}
+tr.row-neutral td{background:var(--surface)} tr.row-neutral:hover td{background:var(--surface2)}
+tr.row-watch td{background:#fffdf0}          tr.row-watch:hover td{background:#fff9d6}
+.cn{font-weight:500;font-size:13px}
+.ct{font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.pu{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500}
+.pe{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-top:1px}
+.cp{font-family:'IBM Plex Mono',monospace;font-size:12px}
+.pos{color:var(--green)}.neg{color:var(--red)}.neu{color:var(--muted)}
+.rw{display:flex;align-items:center;gap:7px}
+.rn{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:500;min-width:28px}
+.rt{flex:1;height:5px;background:var(--border);border-radius:2px;position:relative;overflow:hidden}
+.rz{position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(to right,#16a34a 0 35%,#ca8a04 35% 65%,#aaa 65% 85%,#dc2626 85% 100%);opacity:.2}
+.rf{height:5px;border-radius:2px;transition:width .4s;position:relative;z-index:1}
+.lb-bar{flex:1;height:5px;background:var(--border);border-radius:2px;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{opacity:.4}50%{opacity:.9}100%{opacity:.4}}
+.badge{font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 7px;border-radius:3px;letter-spacing:.04em;font-weight:500;display:inline-block}
+.bb{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.bw{background:#fef9c3;color:#854d0e;border:1px solid #fde047}
+.bn{background:#f4f4f5;color:#52525b;border:1px solid #d4d4d8}
+.bs{background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.bd{background:#f4f4f5;color:var(--dim);border:1px solid var(--border)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.legend span{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace}
+.note{font-size:10px;color:var(--dim);margin-top:8px;font-family:'IBM Plex Mono',monospace}
+.msg{text-align:center;padding:32px;font-size:13px;color:var(--muted);font-family:'IBM Plex Mono',monospace}
+.spin{display:inline-block;animation:spin 1s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@media(max-width:640px){body{padding:12px}th,td{padding:7px 8px;font-size:12px}.sr{grid-template-columns:repeat(2,1fr)}.fng{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hl">
+    <h1>Crypto Watch Panel</h1>
+    <p id="lastUpdate">Sin datos — pulsa actualizar</p>
+  </div>
+  <div class="hr">
+    <select id="filterSel" onchange="renderTable()">
+      <option value="all">Todas</option>
+      <option value="buy">Compra (RSI &lt;35)</option>
+      <option value="watch">Vigilar (RSI 35–50)</option>
+      <option value="neutral">Neutral (RSI 50–65)</option>
+      <option value="sell">Venta (RSI &gt;65)</option>
+    </select>
+    <button class="btn btn-p" id="refreshBtn" onclick="loadData()">&#8635; Actualizar</button>
+  </div>
+</header>
+
+<div class="sb"><div class="dot" id="dot"></div><span id="statusMsg">Listo</span></div>
+<div class="pt" id="pt"><div class="pf" id="pf"></div></div>
+
+<div class="fng" id="fng">
+  <div class="fng-main">
+    <div class="fng-score" id="fngScore">—</div>
+    <div>
+      <div class="fng-label" id="fngLabel">—</div>
+      <div class="fng-sub">Índice de Miedo y Codicia</div>
+    </div>
+  </div>
+  <div class="fng-bar-wrap">
+    <div class="fng-track"><div class="fng-cursor" id="fngCursor" style="left:50%"></div></div>
+    <div class="fng-labs"><span>Miedo extremo</span><span>Neutral</span><span>Codicia extrema</span></div>
+  </div>
+  <div class="fng-sig">
+    <strong id="fngAction">—</strong>
+    <span id="fngAdvice">—</span>
+  </div>
+</div>
+
+<div class="sr">
+  <div class="sc"><div class="lb">RSI promedio</div><div class="vl" id="sAvg">—</div></div>
+  <div class="sc"><div class="lb">En compra</div><div class="vl" style="color:var(--green)" id="sBuy">—</div></div>
+  <div class="sc"><div class="lb">En venta</div><div class="vl" style="color:var(--red)" id="sSell">—</div></div>
+  <div class="sc"><div class="lb">Progreso RSI</div><div class="vl" id="sProg">—</div></div>
+</div>
+
+<div class="panel">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:17%">Activo</th>
+        <th style="width:15%">USD</th>
+        <th style="width:13%">EUR</th>
+        <th style="width:8%">24h</th>
+        <th style="width:27%">RSI 14 (diario)</th>
+        <th style="width:12%">Señal</th>
+        <th style="width:8%">Categoría</th>
+      </tr>
+    </thead>
+    <tbody id="tb">
+      <tr><td colspan="7" class="msg">Pulsa "Actualizar" para cargar los datos.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="legend">
+  <span><span class="badge bb">COMPRA</span> RSI &lt;35 — fila verde</span>
+  <span><span class="badge bw">VIGILAR</span> RSI 35–50</span>
+  <span><span class="badge bn">NEUTRAL</span> RSI 50–65</span>
+  <span><span class="badge bs">VENTA</span> RSI &gt;65 — fila roja</span>
+</div>
+<p class="note">RSI 14 con cierres diarios reales (método Wilder) · Fear & Greed: alternative.me · Datos: CryptoCompare · No es asesoramiento financiero</p>
+
+<!-- CALCULADORA -->
+<div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+  <div style="font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:14px;font-family:'IBM Plex Mono',monospace">Calculadora de orden de venta</div>
+
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 24px;box-shadow:var(--shadow)">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;align-items:end">
+
+      <div>
+        <label style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;display:block;margin-bottom:6px">Precio de compra (USD)</label>
+        <input id="cBuy" type="number" step="any" min="0" placeholder="Ej: 74500"
+          style="width:100%;font-size:14px;font-family:'IBM Plex Mono',monospace;padding:10px 12px;border:1.5px solid var(--border2);border-radius:6px;background:var(--surface);color:var(--text);outline:none"
+          oninput="calcNow()">
+      </div>
+
+      <div>
+        <label style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;display:block;margin-bottom:6px">Margen objetivo: <strong id="cMarginLbl" style="color:var(--accent)">5%</strong></label>
+        <input id="cMargin" type="range" min="1" max="100" value="5" step="1" style="width:100%;margin-top:6px" oninput="document.getElementById('cMarginLbl').textContent=this.value+'%'; calcNow()">
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button onclick="setMargin(5)"  style="flex:1;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer">5%</button>
+        <button onclick="setMargin(10)" style="flex:1;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer">10%</button>
+        <button onclick="setMargin(20)" style="flex:1;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer">20%</button>
+        <button onclick="setMargin(50)" style="flex:1;padding:8px;font-size:11px;font-family:'IBM Plex Mono',monospace;border:1px solid var(--border2);border-radius:5px;background:var(--surface);color:var(--text);cursor:pointer">50%</button>
+      </div>
+
+    </div>
+
+    <!-- Resultado -->
+    <div id="cResult" style="display:none;margin-top:20px;padding-top:18px;border-top:1px solid var(--border)">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:16px">
+
+        <div style="background:var(--green-light);border:1px solid #86efac;border-radius:8px;padding:14px 16px">
+          <div style="font-size:10px;color:var(--green);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:6px">Precio de venta</div>
+          <div id="cSellUSD" style="font-size:22px;font-weight:500;font-family:'IBM Plex Mono',monospace;color:var(--green)">—</div>
+          <div id="cSellEUR" style="font-size:12px;color:var(--green);font-family:'IBM Plex Mono',monospace;margin-top:3px;opacity:.8">—</div>
+        </div>
+
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px">
+          <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:6px">Precio de compra</div>
+          <div id="cBuyShow" style="font-size:22px;font-weight:500;font-family:'IBM Plex Mono',monospace">—</div>
+          <div id="cBuyEUR" style="font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:3px">—</div>
+        </div>
+
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px">
+          <div style="font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;margin-bottom:6px">Diferencia</div>
+          <div id="cDiff" style="font-size:22px;font-weight:500;font-family:'IBM Plex Mono',monospace;color:var(--green)">—</div>
+          <div id="cDiffEUR" style="font-size:12px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:3px">—</div>
+        </div>
+
+      </div>
+
+      <div style="padding:12px 16px;background:var(--green-light);border:1px solid #86efac;border-radius:6px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--green);line-height:1.6">
+        En Coinbase Advanced → activo → <strong>Vender</strong> → <strong>Orden Límite</strong> → introducir precio: <strong id="cInstruct">—</strong>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function fmtUSD2(v) {
+  if (!v) return "—";
+  if (v >= 10000) return "$" + v.toLocaleString("es-ES", {maximumFractionDigits:0});
+  if (v >= 1000)  return "$" + v.toLocaleString("es-ES", {minimumFractionDigits:2, maximumFractionDigits:2});
+  if (v >= 1)     return "$" + v.toFixed(4);
+  if (v >= 0.01)  return "$" + v.toFixed(6);
+  return "$" + v.toFixed(9);
+}
+function fmtEUR2(v) {
+  const rate = (function() {
+    const btc = tableData.find(c => c.sym === "BTC");
+    return (btc && btc.priceUSD && btc.priceEUR) ? btc.priceEUR / btc.priceUSD : 0.849;
+  })();
+  const e = v * rate;
+  if (e >= 10000) return "≈ €" + e.toLocaleString("es-ES", {maximumFractionDigits:0});
+  if (e >= 1000)  return "≈ €" + e.toLocaleString("es-ES", {minimumFractionDigits:2, maximumFractionDigits:2});
+  if (e >= 1)     return "≈ €" + e.toFixed(4);
+  if (e >= 0.01)  return "≈ €" + e.toFixed(6);
+  return "≈ €" + e.toFixed(9);
+}
+
+function setMargin(v) {
+  document.getElementById("cMargin").value = v;
+  document.getElementById("cMarginLbl").textContent = v + "%";
+  calcNow();
+}
+
+function calcNow() {
+  const buy    = parseFloat(document.getElementById("cBuy").value);
+  const margin = parseInt(document.getElementById("cMargin").value);
+  const result = document.getElementById("cResult");
+
+  if (!buy || buy <= 0 || isNaN(buy)) { result.style.display = "none"; return; }
+
+  const sell = buy * (1 + margin / 100);
+  const diff = sell - buy;
+
+  document.getElementById("cSellUSD").textContent  = fmtUSD2(sell);
+  document.getElementById("cSellEUR").textContent  = fmtEUR2(sell);
+  document.getElementById("cBuyShow").textContent  = fmtUSD2(buy);
+  document.getElementById("cBuyEUR").textContent   = fmtEUR2(buy);
+  document.getElementById("cDiff").textContent     = "+" + fmtUSD2(diff);
+  document.getElementById("cDiffEUR").textContent  = "+" + fmtEUR2(diff);
+  document.getElementById("cInstruct").textContent = fmtUSD2(sell);
+
+  result.style.display = "block";
+}
+</script>
+<!-- FIN CALCULADORA -->
+
+<script>
+const COINS = [
+  {sym:"BTC",    name:"Bitcoin",    tick:"BTC",  cat:"L1"},
+  {sym:"ETH",    name:"Ethereum",   tick:"ETH",  cat:"L1"},
+  {sym:"SOL",    name:"Solana",     tick:"SOL",  cat:"L1"},
+  {sym:"BNB",    name:"BNB",        tick:"BNB",  cat:"L1"},
+  {sym:"AVAX",   name:"Avalanche",  tick:"AVAX", cat:"L1"},
+  {sym:"NEAR",   name:"NEAR",       tick:"NEAR", cat:"L1"},
+  {sym:"ATOM",   name:"Cosmos",     tick:"ATOM", cat:"L1"},
+  {sym:"DOT",    name:"Polkadot",   tick:"DOT",  cat:"L1"},
+  {sym:"LTC",    name:"Litecoin",   tick:"LTC",  cat:"L1"},
+  {sym:"XRP",    name:"XRP",        tick:"XRP",  cat:"Pago"},
+  {sym:"TRX",    name:"TRON",       tick:"TRX",  cat:"Pago"},
+  {sym:"LINK",   name:"Chainlink",  tick:"LINK", cat:"DeFi"},
+  {sym:"UNI",    name:"Uniswap",    tick:"UNI",  cat:"DeFi"},
+  {sym:"ADA",    name:"Cardano",    tick:"ADA",  cat:"DeFi"},
+  {sym:"RENDER", name:"Render",     tick:"RNDR", cat:"IA"},
+  {sym:"FET",    name:"Fetch.ai",   tick:"FET",  cat:"IA"},
+  {sym:"DOGE",   name:"Dogecoin",   tick:"DOGE", cat:"Meme"},
+  {sym:"SHIB",   name:"Shiba Inu",  tick:"SHIB", cat:"Meme"},
+  {sym:"PEPE",   name:"Pepe",       tick:"PEPE", cat:"Meme"},
+];
+
+let tableData = [];
+const BASE = "https://min-api.cryptocompare.com/data";
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function calcRSI(closes) {
+  if (!closes || closes.length < 15) return null;
+  const s = closes.slice(-15);
+  let g = 0, l = 0;
+  for (let i = 1; i < s.length; i++) {
+    const d = s[i] - s[i-1];
+    if (d > 0) g += d; else l += Math.abs(d);
+  }
+  const ag = g/14, al = l/14;
+  if (al === 0) return 100;
+  return Math.round(100-(100/(1+ag/al)));
+}
+
+function sig(r) {
+  if (r === null) return {l:"…",  c:"bd", row:""};
+  if (r < 35)    return {l:"COMPRA",  c:"bb", row:"row-buy"};
+  if (r < 50)    return {l:"VIGILAR", c:"bw", row:"row-watch"};
+  if (r < 65)    return {l:"NEUTRAL", c:"bn", row:"row-neutral"};
+  return             {l:"VENTA",  c:"bs", row:"row-sell"};
+}
+function rc(r) {
+  if (r === null) return "#ccc";
+  if (r < 35) return "#16a34a";
+  if (r < 50) return "#ca8a04";
+  if (r < 65) return "#a1a1aa";
+  return "#dc2626";
+}
+function fu(p) {
+  if (!p) return "—";
+  if (p >= 1000) return "$"+p.toLocaleString("es-ES",{maximumFractionDigits:0});
+  if (p >= 1)    return "$"+p.toFixed(2);
+  if (p >= 0.01) return "$"+p.toFixed(4);
+  if (p >= 0.0001) return "$"+p.toFixed(6);
+  return "$"+p.toFixed(9);
+}
+function fe(p) {
+  if (!p) return "—";
+  if (p >= 1000) return "€"+p.toLocaleString("es-ES",{maximumFractionDigits:0});
+  if (p >= 1)    return "€"+p.toFixed(2);
+  if (p >= 0.01) return "€"+p.toFixed(4);
+  if (p >= 0.0001) return "€"+p.toFixed(6);
+  return "€"+p.toFixed(9);
+}
+function ss(m, state="") {
+  document.getElementById("statusMsg").textContent = m;
+  document.getElementById("dot").className = "dot"+(state?" "+state:"");
+}
+function sp(p) { document.getElementById("pf").style.width = p+"%"; }
+
+function renderFNG(value, classification) {
+  const el = document.getElementById("fng");
+  el.style.display = "flex";
+  document.getElementById("fngScore").textContent = value;
+  document.getElementById("fngLabel").textContent = classification;
+  document.getElementById("fngCursor").style.left = value+"%";
+  const v = parseInt(value);
+  let col, action, advice;
+  if (v <= 25)      { col="#dc2626"; action="Señal de compra potencial"; advice="Miedo extremo → mercado sobrevendido"; }
+  else if (v <= 45) { col="#ea580c"; action="Precaución";               advice="Miedo moderado → vigilar soportes"; }
+  else if (v <= 55) { col="#ca8a04"; action="Mercado neutral";          advice="Sin señal clara de dirección"; }
+  else if (v <= 75) { col="#16a34a"; action="Precaución alcista";       advice="Codicia moderada → considerar tomar beneficios"; }
+  else              { col="#15803d"; action="Señal de venta potencial"; advice="Codicia extrema → mercado sobrecomprado"; }
+  document.getElementById("fngScore").style.color = col;
+  document.getElementById("fngLabel").style.color = col;
+  document.getElementById("fngAction").textContent = action;
+  document.getElementById("fngAdvice").textContent = advice;
+}
+
+function upSum() {
+  const w = tableData.filter(c => c.rsi !== null);
+  if (!w.length) return;
+  document.getElementById("sAvg").textContent = Math.round(w.reduce((a,c)=>a+c.rsi,0)/w.length);
+  document.getElementById("sBuy").textContent = w.filter(c=>c.rsi<35).length;
+  document.getElementById("sSell").textContent = w.filter(c=>c.rsi>=65).length;
+  document.getElementById("sProg").textContent = w.length+"/"+COINS.length;
+}
+
+function renderTable() {
+  const f = document.getElementById("filterSel").value;
+  const tb = document.getElementById("tb");
+  const rows = tableData.filter(c => {
+    if (f==="buy")     return c.rsi!==null && c.rsi<35;
+    if (f==="watch")   return c.rsi!==null && c.rsi>=35 && c.rsi<50;
+    if (f==="neutral") return c.rsi!==null && c.rsi>=50 && c.rsi<65;
+    if (f==="sell")    return c.rsi!==null && c.rsi>=65;
+    return true;
+  });
+  if (!rows.length) {
+    tb.innerHTML='<tr><td colspan="7" class="msg">Ninguna cripto en esta zona.</td></tr>';
+    return;
+  }
+  tb.innerHTML = rows.map(c => {
+    const s = sig(c.rsi), col = rc(c.rsi);
+    const cc = c.chg>0.05?"pos":c.chg<-0.05?"neg":"neu";
+    const cs = (c.chg>=0?"+":"")+c.chg.toFixed(2)+"%";
+    const rsiBar = c.rsi !== null
+      ? `<div class="rt"><div class="rz"></div><div class="rf" style="width:${c.rsi}%;background:${col}"></div></div>`
+      : `<div class="lb-bar" style="flex:1"></div>`;
+    return `<tr class="${s.row}">
+      <td><div class="cn">${c.name}</div><div class="ct">${c.tick}</div></td>
+      <td><div class="pu">${fu(c.priceUSD)}</div></td>
+      <td><div class="pe">${fe(c.priceEUR)}</div></td>
+      <td><span class="cp ${cc}">${cs}</span></td>
+      <td><div class="rw">
+        <span class="rn" style="color:${col}">${c.rsi!==null?c.rsi:"…"}</span>
+        ${rsiBar}
+      </div></td>
+      <td><span class="badge ${s.c}">${s.l}</span></td>
+      <td style="font-size:10px;color:var(--muted);font-family:'IBM Plex Mono',monospace">${c.cat}</td>
+    </tr>`;
+  }).join("");
+  upSum();
+}
+
+async function loadData() {
+  const btn = document.getElementById("refreshBtn");
+  const pt  = document.getElementById("pt");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin">&#8635;</span> Cargando...';
+  pt.style.display = "block";
+  sp(5); ss("Obteniendo datos...", "loading");
+
+  try {
+    // Fear & Greed
+    try {
+      const fr = await fetch("https://api.alternative.me/fng/?limit=1");
+      const fd = await fr.json();
+      renderFNG(fd.data[0].value, fd.data[0].value_classification);
+    } catch {}
+    sp(8);
+
+    // Precios USD+EUR — una llamada
+    ss("Obteniendo precios...", "loading");
+    const syms = COINS.map(c=>c.sym).join(",");
+    const pr = await fetch(`${BASE}/pricemultifull?fsyms=${syms}&tsyms=USD,EUR`);
+    if (!pr.ok) throw new Error("Error precios: "+pr.status);
+    const pd = await pr.json();
+    const raw = pd.RAW || {};
+    sp(18);
+
+    tableData = COINS.map(c => {
+      const u = raw[c.sym]?.USD || {};
+      const e = raw[c.sym]?.EUR || {};
+      return {
+        name:c.name, tick:c.tick, sym:c.sym, cat:c.cat,
+        priceUSD: u.PRICE||0,
+        priceEUR: e.PRICE||0,
+        chg: u.CHANGEPCT24HOUR||0,
+        rsi: null
+      };
+    });
+    renderTable();
+
+    // RSI secuencial estricto — una a una
+    for (let i = 0; i < COINS.length; i++) {
+      const coin = COINS[i];
+      ss(`RSI ${coin.name} (${i+1} de ${COINS.length})...`, "loading");
+      sp(18 + Math.round((i/COINS.length)*78));
+      try {
+        const r = await fetch(`${BASE}/v2/histoday?fsym=${coin.sym}&tsym=USD&limit=15`);
+        if (r.ok) {
+          const d = await r.json();
+          const closes = (d.Data?.Data||[]).map(x=>x.close).filter(v=>v>0);
+          if (closes.length >= 15) tableData[i].rsi = calcRSI(closes);
+        }
+      } catch {}
+      renderTable();
+      if (i < COINS.length-1) await sleep(350);
+    }
+
+    sp(100);
+    const now = new Date();
+    const ts = now.toLocaleTimeString("es-ES",{hour:"2-digit",minute:"2-digit"});
+    ss("Actualizado a las "+ts, "live");
+    document.getElementById("lastUpdate").textContent =
+      "Última actualización: "+ts+" · "+now.toLocaleDateString("es-ES");
+    setTimeout(()=>{ pt.style.display="none"; sp(0); }, 600);
+
+  } catch(e) {
+    ss("Error: "+e.message, "err");
+    if (!tableData.length)
+      document.getElementById("tb").innerHTML =
+        `<tr><td colspan="7" class="msg" style="color:var(--red)">${e.message}<br>
+        <small style="color:var(--muted)">Comprueba tu conexión e inténtalo de nuevo.</small></td></tr>`;
+  }
+  btn.disabled = false;
+  btn.innerHTML = "&#8635; Actualizar";
+}
+</script>
+</body>
+</html>
