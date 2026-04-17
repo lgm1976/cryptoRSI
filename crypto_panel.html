@@ -270,7 +270,7 @@ tr.row-alerted td{outline:2px solid #f59e0b;outline-offset:-2px;animation:alertP
 <!-- ══ HEADER ══ -->
 <header>
   <div class="hl">
-    <h1>Crypto Watch Panel <span style="opacity:.4;font-weight:400">v2.0</span></h1>
+    <h1>Crypto Watch Panel <span style="opacity:.4;font-weight:400">v2.1</span></h1>
     <p id="lastUpdate">Sin datos — pulsa actualizar</p>
   </div>
   <div class="hr">
@@ -829,8 +829,12 @@ async function openChartModal(sym){
   document.getElementById("cmLoader").style.display="inline-block";
   if(chartObj) {chartObj.remove(); chartObj=null;}
   
+  // Wait to ensure DOM repaint has completed so chart container has >0 width
+  await new Promise(r=>setTimeout(r,50));
+
   const isDark=document.documentElement.getAttribute("data-theme")==="dark";
   chartObj=LightweightCharts.createChart(document.getElementById("tvchart"),{
+    autoSize: true,
     layout:{background:{type:'solid',color:isDark?'#1c1c1a':'#ffffff'},textColor:isDark?'#e8e8e4':'#1a1a18'},
     grid:{vertLines:{color:isDark?'#2e2e2b':'#f0f0f0'},horzLines:{color:isDark?'#2e2e2b':'#f0f0f0'}},
     timeScale:{borderColor:isDark?'#2e2e2b':'#e2e2dc'},rightPriceScale:{borderColor:isDark?'#2e2e2b':'#e2e2dc'}
@@ -860,15 +864,36 @@ async function fetchAndPlotChart(coin){
       if(r&&r.timestamp){
         for(let i=0;i<r.timestamp.length;i++){
            const q=r.indicators.quote[0];
-           if(q.close[i]>0) data.push({time:r.timestamp[i],open:q.open[i],high:q.high[i],low:q.low[i],close:q.close[i]});
+           if(q.close[i]!=null && q.open[i]!=null && q.high[i]!=null && q.low[i]!=null && q.close[i]>0) {
+              data.push({time:r.timestamp[i],open:q.open[i],high:q.high[i],low:q.low[i],close:q.close[i]});
+           }
         }
       }
     }
-    candleSeries.setData(data);
+    
+    data.sort((a,b)=>a.time - b.time);
+    const uData = [];
+    let lastTime = '';
+    for (let d of data) {
+       const dt = new Date(d.time*1000);
+       const dStr = dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+       if (dStr !== lastTime) {
+          uData.push({time: dStr, open: d.open, high: d.high, low: d.low, close: d.close});
+          lastTime = dStr;
+       }
+    }
+
+    candleSeries.setData(uData);
     const ma7d=[],ma30d=[];
-    for(let i=0;i<data.length;i++){
-      if(i>=6) ma7d.push({time:data[i].time,value:data.slice(i-6,i+1).reduce((a,b)=>a+b.close,0)/7});
-      if(i>=29) ma30d.push({time:data[i].time,value:data.slice(i-29,i+1).reduce((a,b)=>a+b.close,0)/30});
+    for(let i=0;i<uData.length;i++){
+      if(i>=6) {
+         const val = uData.slice(i-6,i+1).reduce((a,b)=>a+b.close,0)/7;
+         ma7d.push({time:uData[i].time,value:val});
+      }
+      if(i>=29) {
+         const val = uData.slice(i-29,i+1).reduce((a,b)=>a+b.close,0)/30;
+         ma30d.push({time:uData[i].time,value:val});
+      }
     }
     ma7Series.setData(ma7d);
     ma30Series.setData(ma30d);
