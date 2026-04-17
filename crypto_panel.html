@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crypto Watch Panel v1.1</title>
+<title>Crypto Watch Panel v1.2</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -78,7 +78,7 @@ select{font-size:11px;font-family:'IBM Plex Mono',monospace;padding:8px 10px;bor
 .sc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;box-shadow:var(--shadow)}
 .sc .lb{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
 .sc .vl{font-size:20px;font-weight:500;font-family:'IBM Plex Mono',monospace}
-.sc .vl-sm{font-size:13px;font-weight:500;font-family:'IBM Plex Mono',monospace;line-height:1.6}
+.sc .vl-sm{font-size:12px;font-weight:500;font-family:'IBM Plex Mono',monospace;line-height:1.7}
 
 /* ── Table ── */
 .panel{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:var(--shadow)}
@@ -89,12 +89,12 @@ td{padding:10px 12px;font-size:13px;border-bottom:1px solid var(--border);vertic
 tbody tr:last-child td{border-bottom:none}
 
 /* ── Row colors ── */
-tr.row-buy      td{background:#f0fdf4} tr.row-buy:hover      td{background:#dcfce7}
-tr.row-buy-w    td{background:#f7fef9} tr.row-buy-w:hover    td{background:#ecfdf5}
-tr.row-sell     td{background:var(--red-row)} tr.row-sell:hover td{background:var(--red-row-h)}
-tr.row-neutral  td{background:var(--surface)} tr.row-neutral:hover td{background:var(--surface2)}
-tr.row-watch    td{background:#fffdf0} tr.row-watch:hover    td{background:#fff9d6}
-tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbeafe}
+tr.row-buy     td{background:#f0fdf4} tr.row-buy:hover     td{background:#dcfce7}
+tr.row-buy-w   td{background:#f7fef9} tr.row-buy-w:hover   td{background:#ecfdf5}
+tr.row-sell    td{background:var(--red-row)} tr.row-sell:hover td{background:var(--red-row-h)}
+tr.row-neutral td{background:var(--surface)} tr.row-neutral:hover td{background:var(--surface2)}
+tr.row-watch   td{background:#fffdf0} tr.row-watch:hover   td{background:#fff9d6}
+tr.row-hold    td{background:#eff6ff} tr.row-hold:hover    td{background:#dbeafe}
 
 /* ── Cell styles ── */
 .cn{font-weight:500;font-size:13px}
@@ -103,6 +103,7 @@ tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbea
 .pu{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500}
 .pe{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);margin-top:1px}
 .cp{font-family:'IBM Plex Mono',monospace;font-size:12px}
+.cp-label{font-size:9px;color:var(--dim);font-family:'IBM Plex Mono',monospace;letter-spacing:.06em;margin-bottom:1px}
 .pos{color:var(--green)}.neg{color:var(--red)}.neu{color:var(--muted)}
 .rw{display:flex;align-items:center;gap:7px}
 .rn{font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:500;min-width:28px}
@@ -114,20 +115,27 @@ tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbea
 
 /* ── Signal badges ── */
 .badge{font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 7px;border-radius:3px;letter-spacing:.04em;font-weight:500;display:inline-block;white-space:nowrap}
-.bb-f{background:#14532d;color:#fff;border:1px solid #15803d}           /* COMPRA FUERTE */
-.bb  {background:#dcfce7;color:#15803d;border:1px solid #86efac}        /* COMPRA DÉBIL  */
-.bv  {background:#fef9c3;color:#854d0e;border:1px solid #fde047}        /* VIGILAR       */
-.bn  {background:#f4f4f5;color:#52525b;border:1px solid #d4d4d8}        /* NEUTRAL       */
-.bm  {background:#eff6ff;color:#1d4ed8;border:1px solid #93c5fd}        /* MANTENER      */
-.bs  {background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}        /* VENTA         */
-.bs-f{background:#7f1d1d;color:#fff;border:1px solid #991b1b}           /* VENTA FUERTE  */
-.bd  {background:#f4f4f5;color:var(--dim);border:1px solid var(--border)}/* sin datos    */
+.bb-f{background:#14532d;color:#fff;border:1px solid #15803d}
+.bb  {background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.bv  {background:#fef9c3;color:#854d0e;border:1px solid #fde047}
+.bn  {background:#f4f4f5;color:#52525b;border:1px solid #d4d4d8}
+.bm  {background:#eff6ff;color:#1d4ed8;border:1px solid #93c5fd}
+.bs  {background:#fee2e2;color:#991b1b;border:1px solid #fca5a5}
+.bs-f{background:#7f1d1d;color:#fff;border:1px solid #991b1b}
+.bd  {background:#f4f4f5;color:var(--dim);border:1px solid var(--border)}
+
+/* ── Trend badges ── */
+.bt-a{background:#f0fdf4;color:#15803d;border:1px solid #86efac;font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 7px;border-radius:3px;font-weight:500;display:inline-block;white-space:nowrap}
+.bt-l{background:#f4f4f5;color:#52525b;border:1px solid #d4d4d8;font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 7px;border-radius:3px;font-weight:500;display:inline-block;white-space:nowrap}
+.bt-b{background:#fef2f2;color:#991b1b;border:1px solid #fca5a5;font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 7px;border-radius:3px;font-weight:500;display:inline-block;white-space:nowrap}
+.bt-n{background:none;color:var(--dim);font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 0;display:inline-block}
+.trend-detail{font-size:9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;margin-top:4px;line-height:1.5}
 
 /* ── Volume badges ── */
 .vbadge{font-size:9px;font-family:'IBM Plex Mono',monospace;padding:2px 6px;border-radius:3px;font-weight:500;display:block;width:fit-content;margin-top:4px;letter-spacing:.04em}
-.vb-a{background:#dcfce7;color:#15803d;border:1px solid #86efac}  /* ALTO  */
-.vb-m{background:#f4f4f5;color:#52525b;border:1px solid #d4d4d8}  /* MEDIO */
-.vb-b{background:#fef9c3;color:#854d0e;border:1px solid #fde047}  /* BAJO  */
+.vb-a{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.vb-m{background:#f4f4f5;color:#52525b;border:1px solid #d4d4d8}
+.vb-b{background:#fef9c3;color:#854d0e;border:1px solid #fde047}
 .vb-n{background:none;color:var(--dim);border:none}
 
 /* ── Legend & footer ── */
@@ -139,12 +147,13 @@ tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbea
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 /* ── Responsive ── */
-@media(max-width:640px){
+@media(max-width:768px){
   body{padding:12px}
-  th,td{padding:7px 8px;font-size:12px}
+  th,td{padding:7px 8px;font-size:11px}
   .sr{grid-template-columns:repeat(2,1fr)}
   .fng{flex-direction:column;align-items:flex-start}
   .disclaimer{font-size:10px}
+  th.col-trend,td.col-trend{display:none}
 }
 </style>
 </head>
@@ -155,9 +164,9 @@ tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbea
   <span>⚠️</span>
   <div>
     <strong>Solo para uso informativo.</strong>
-    Las señales de este panel combinan RSI y volumen como referencia técnica.
+    Las señales combinan RSI, volumen y tendencia como referencia técnica.
     <strong>No constituyen asesoramiento financiero</strong> ni recomendación de inversión.
-    Los mercados de criptomonedas son altamente volátiles. Invierte únicamente lo que estés dispuesto a perder y consulta siempre a un asesor cualificado.
+    Los mercados de criptomonedas son altamente volátiles. Invierte únicamente lo que estés dispuesto a perder.
   </div>
   <button class="disc-close" onclick="document.getElementById('discBanner').style.display='none'" title="Cerrar">✕</button>
 </div>
@@ -165,7 +174,7 @@ tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbea
 <!-- ══ HEADER ══ -->
 <header>
   <div class="hl">
-    <h1>Crypto Watch Panel <span style="opacity:.45;font-weight:400">v1.1</span></h1>
+    <h1>Crypto Watch Panel <span style="opacity:.45;font-weight:400">v1.2</span></h1>
     <p id="lastUpdate">Sin datos — pulsa actualizar</p>
   </div>
   <div class="hr">
@@ -177,6 +186,12 @@ tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbea
       <option value="hold">🔵 Mantener</option>
       <option value="sell">🔴 Venta</option>
       <option value="sell-strong">⛔ Venta fuerte</option>
+    </select>
+    <select id="trendSel" onchange="renderTable()">
+      <option value="all">Todas las tendencias</option>
+      <option value="alcista">↑ Alcista</option>
+      <option value="lateral">→ Lateral</option>
+      <option value="bajista">↓ Bajista</option>
     </select>
     <button class="btn btn-p" id="refreshBtn" onclick="loadData()">&#8635; Actualizar</button>
   </div>
@@ -220,8 +235,8 @@ tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbea
     <div class="vl-sm" style="color:var(--red)" id="sSell">—</div>
   </div>
   <div class="sc">
-    <div class="lb">Señales neutras</div>
-    <div class="vl-sm" style="color:var(--gray)" id="sNeutral">—</div>
+    <div class="lb">Tendencias</div>
+    <div class="vl-sm" id="sTrend">—</div>
   </div>
   <div class="sc">
     <div class="lb">Vol. total 24h</div>
@@ -238,31 +253,35 @@ tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbea
   <table>
     <thead>
       <tr>
-        <th style="width:18%">Activo</th>
-        <th style="width:14%">Precio</th>
-        <th style="width:7%">24h</th>
-        <th style="width:24%">RSI 14 (diario)</th>
-        <th style="width:15%">Vol. 24h</th>
-        <th style="width:22%">Señal combinada</th>
+        <th style="width:16%">Activo</th>
+        <th style="width:12%">Precio</th>
+        <th style="width:9%">Cambios</th>
+        <th style="width:21%">RSI 14 · Sparkline</th>
+        <th style="width:12%" class="col-trend">Tendencia</th>
+        <th style="width:13%">Vol. 24h</th>
+        <th style="width:17%">Señal combinada</th>
       </tr>
     </thead>
     <tbody id="tb">
-      <tr><td colspan="6" class="msg">Pulsa "Actualizar" para cargar los datos.</td></tr>
+      <tr><td colspan="7" class="msg">Pulsa "Actualizar" para cargar los datos.</td></tr>
     </tbody>
   </table>
 </div>
 
 <!-- ══ LEGEND ══ -->
 <div class="legend">
-  <span><span class="badge bb-f">COMPRA FUERTE</span> RSI &lt;35 + Volumen alto</span>
-  <span><span class="badge bb">COMPRA DÉBIL</span> RSI &lt;35 + Volumen bajo/medio</span>
-  <span><span class="badge bm">MANTENER</span> RSI &gt;65 + Volumen alto</span>
-  <span><span class="badge bs">VENTA</span> RSI &gt;65 + Volumen bajo/medio</span>
+  <span><span class="badge bb-f">COMPRA FUERTE</span> RSI &lt;35 + Vol alto + tendencia no bajista</span>
+  <span><span class="badge bb">COMPRA DÉBIL</span> RSI &lt;35 + señales mixtas</span>
+  <span><span class="badge bm">MANTENER</span> RSI &gt;65 + Vol alto + tendencia alcista</span>
+  <span><span class="badge bs">VENTA</span> RSI &gt;65 + señales moderadas</span>
   <span><span class="badge bs-f">VENTA FUERTE</span> RSI &gt;80</span>
 </div>
 <p class="note">
-  RSI 14 con cierres diarios reales (método Wilder) · Volumen clasificado por percentil (BAJO / MEDIO / ALTO) relativo al conjunto ·
-  Fear &amp; Greed: alternative.me · Datos: CryptoCompare · <strong>No es asesoramiento financiero</strong>
+  RSI 14 · MA7 · MA30 calculados con cierres diarios reales (30 días) ·
+  Volumen por percentil relativo al conjunto ·
+  Tendencia: precio vs MA7 vs MA30 ·
+  Fear &amp; Greed: alternative.me · Datos: CryptoCompare ·
+  <strong>No es asesoramiento financiero</strong>
 </p>
 
 <!-- ══ CALCULADORA ══ -->
@@ -306,7 +325,7 @@ tr.row-hold     td{background:#eff6ff} tr.row-hold:hover     td{background:#dbea
         </div>
       </div>
       <div style="padding:12px 16px;background:var(--green-light);border:1px solid #86efac;border-radius:6px;font-size:12px;font-family:'IBM Plex Mono',monospace;color:var(--green);line-height:1.6">
-        En Coinbase Advanced → activo → <strong>Vender</strong> → <strong>Orden Límite</strong> → introducir precio: <strong id="cInstruct">—</strong>
+        En Coinbase Advanced → activo → <strong>Vender</strong> → <strong>Orden Límite</strong> → precio: <strong id="cInstruct">—</strong>
       </div>
     </div>
   </div>
@@ -359,7 +378,7 @@ function calcNow() {
 </script>
 
 <script>
-/* ── Datos ── */
+/* ── Monedas ── */
 const COINS = [
   {sym:"BTC",    name:"Bitcoin",    tick:"BTC",  cat:"L1"},
   {sym:"ETH",    name:"Ethereum",   tick:"ETH",  cat:"L1"},
@@ -383,10 +402,14 @@ const COINS = [
 ];
 
 let tableData = [];
-const BASE = "https://min-api.cryptocompare.com/data";
+const BASE  = "https://min-api.cryptocompare.com/data";
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-/* ── RSI (método Wilder) ── */
+/* ────────────────────────────────────────
+   INDICADORES TÉCNICOS
+──────────────────────────────────────── */
+
+/* RSI 14 (método Wilder) */
 function calcRSI(closes) {
   if (!closes || closes.length < 15) return null;
   const s = closes.slice(-15);
@@ -397,12 +420,52 @@ function calcRSI(closes) {
   }
   const ag = g/14, al = l/14;
   if (al === 0) return 100;
-  return Math.round(100-(100/(1+ag/al)));
+  return Math.round(100 - (100 / (1 + ag/al)));
 }
 
-/* ── Clasificación de volumen por percentil ── */
+/* Media Móvil Simple */
+function calcMA(closes, n) {
+  const slice = closes.slice(-n);
+  if (slice.length < n) return null;
+  return slice.reduce((a, b) => a + b, 0) / n;
+}
+
+/* Tendencia: precio vs MA7 vs MA30 */
+function calcTrend(price, ma7, ma30) {
+  if (!ma7 || !ma30 || !price) return null;
+  if (price > ma7 && ma7 > ma30) return "alcista";
+  if (price < ma7 && ma7 < ma30) return "bajista";
+  return "lateral";
+}
+
+/* Sparkline SVG (14 cierres) */
+function sparkSVG(closes, w=82, h=22) {
+  if (!closes || closes.length < 2) return "";
+  const min   = Math.min(...closes);
+  const max   = Math.max(...closes);
+  const range = max - min || 1;
+  const pts   = closes.map((v, i) => {
+    const x = (i / (closes.length - 1)) * w;
+    const y = (h - 3) - ((v - min) / range) * (h - 6) + 1;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  const up    = closes[closes.length - 1] >= closes[0];
+  const color = up ? "#16a34a" : "#dc2626";
+  const last  = pts[pts.length - 1].split(",");
+  return `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"
+    style="display:block;margin-top:5px;overflow:visible" aria-hidden="true">
+    <polyline points="${pts.join(" ")}"
+      fill="none" stroke="${color}" stroke-width="1.5"
+      stroke-linejoin="round" stroke-linecap="round" opacity=".85"/>
+    <circle cx="${last[0]}" cy="${last[1]}" r="2.2" fill="${color}"/>
+  </svg>`;
+}
+
+/* ────────────────────────────────────────
+   CLASIFICACIÓN VOLUMEN
+──────────────────────────────────────── */
 function classifyVolumes() {
-  const vols = tableData.map(c => c.vol24h).filter(v => v > 0).sort((a,b) => a-b);
+  const vols = tableData.map(c => c.vol24h).filter(v => v > 0).sort((a, b) => a - b);
   if (!vols.length) return;
   const p33 = vols[Math.floor(vols.length * 0.33)];
   const p66 = vols[Math.floor(vols.length * 0.66)];
@@ -412,53 +475,85 @@ function classifyVolumes() {
   });
 }
 
-/* ── Señal combinada RSI + Volumen ── */
-function combinedSig(rsi, volClass) {
-  if (rsi === null) return {l:"…",           c:"bd",   row:"",          key:"pending"};
-  if (rsi > 80)     return {l:"VENTA FUERTE", c:"bs-f", row:"row-sell",  key:"sell-strong"};
-  if (rsi >= 65 && volClass === "ALTO")
-                    return {l:"MANTENER",     c:"bm",   row:"row-hold",  key:"hold"};
-  if (rsi >= 65)    return {l:"VENTA",        c:"bs",   row:"row-sell",  key:"sell"};
-  if (rsi < 35 && volClass === "ALTO")
-                    return {l:"COMPRA FUERTE",c:"bb-f", row:"row-buy",   key:"buy-strong"};
-  if (rsi < 35)     return {l:"COMPRA DÉBIL", c:"bb",   row:"row-buy-w", key:"buy"};
-  if (rsi < 50)     return {l:"VIGILAR",      c:"bv",   row:"row-watch", key:"neutral"};
-  return                   {l:"NEUTRAL",      c:"bn",   row:"row-neutral",key:"neutral"};
+/* ────────────────────────────────────────
+   SEÑAL COMBINADA: RSI + VOLUMEN + TENDENCIA
+──────────────────────────────────────── */
+function combinedSig(rsi, volClass, trend) {
+  if (rsi === null) return {l:"…", c:"bd", row:"", key:"pending"};
+
+  // RSI extremo superior — señal de venta independiente de todo
+  if (rsi > 80)
+    return {l:"VENTA FUERTE", c:"bs-f", row:"row-sell", key:"sell-strong"};
+
+  // Zona sobrecomprada (65–80)
+  if (rsi >= 65) {
+    // Vol alto + tendencia alcista = el mercado sigue empujando: mantener
+    if (volClass === "ALTO" && trend === "alcista")
+      return {l:"MANTENER", c:"bm", row:"row-hold", key:"hold"};
+    // Cualquier otro caso en zona sobrecomprada = venta
+    return {l:"VENTA", c:"bs", row:"row-sell", key:"sell"};
+  }
+
+  // Zona sobrevendida (<35)
+  if (rsi < 35) {
+    // Vol alto confirma el movimiento + tendencia no bajista = señal fuerte
+    if (volClass === "ALTO" && trend !== "bajista")
+      return {l:"COMPRA FUERTE", c:"bb-f", row:"row-buy", key:"buy-strong"};
+    // Resto: señal débil (vol bajo o tendencia en contra)
+    return {l:"COMPRA DÉBIL", c:"bb", row:"row-buy-w", key:"buy"};
+  }
+
+  // Zona intermedia
+  if (rsi < 50) return {l:"VIGILAR",  c:"bv", row:"row-watch",    key:"neutral"};
+  return               {l:"NEUTRAL",  c:"bn", row:"row-neutral",   key:"neutral"};
 }
 
-/* ── Formato precio ── */
+/* ────────────────────────────────────────
+   FORMATO
+──────────────────────────────────────── */
 function fu(p) {
   if (!p) return "—";
-  if (p >= 1000)   return "$"+p.toLocaleString("es-ES",{maximumFractionDigits:0});
-  if (p >= 1)      return "$"+p.toFixed(2);
-  if (p >= 0.01)   return "$"+p.toFixed(4);
-  if (p >= 0.0001) return "$"+p.toFixed(6);
-  return "$"+p.toFixed(9);
+  if (p >= 1000)   return "$" + p.toLocaleString("es-ES", {maximumFractionDigits:0});
+  if (p >= 1)      return "$" + p.toFixed(2);
+  if (p >= 0.01)   return "$" + p.toFixed(4);
+  if (p >= 0.0001) return "$" + p.toFixed(6);
+  return "$" + p.toFixed(9);
 }
 function fe(p) {
   if (!p) return "—";
-  if (p >= 1000)   return "€"+p.toLocaleString("es-ES",{maximumFractionDigits:0});
-  if (p >= 1)      return "€"+p.toFixed(2);
-  if (p >= 0.01)   return "€"+p.toFixed(4);
-  if (p >= 0.0001) return "€"+p.toFixed(6);
-  return "€"+p.toFixed(9);
+  if (p >= 1000)   return "€" + p.toLocaleString("es-ES", {maximumFractionDigits:0});
+  if (p >= 1)      return "€" + p.toFixed(2);
+  if (p >= 0.01)   return "€" + p.toFixed(4);
+  if (p >= 0.0001) return "€" + p.toFixed(6);
+  return "€" + p.toFixed(9);
 }
-
-/* ── Formato volumen ── */
 function fvol(v) {
   if (!v) return "—";
-  if (v >= 1e9) return "$"+(v/1e9).toFixed(2)+"B";
-  if (v >= 1e6) return "$"+(v/1e6).toFixed(0)+"M";
-  if (v >= 1e3) return "$"+(v/1e3).toFixed(0)+"K";
-  return "$"+v.toFixed(0);
+  if (v >= 1e9) return "$" + (v/1e9).toFixed(2) + "B";
+  if (v >= 1e6) return "$" + (v/1e6).toFixed(0) + "M";
+  if (v >= 1e3) return "$" + (v/1e3).toFixed(0) + "K";
+  return "$" + v.toFixed(0);
+}
+function fchg(v) {
+  if (v === null || v === undefined) return {txt:"—", cls:"neu"};
+  const s = (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
+  return {txt:s, cls: v > 0.05 ? "pos" : v < -0.05 ? "neg" : "neu"};
+}
+function fmaRel(price, ma) {
+  if (!ma || !price) return null;
+  return ((price - ma) / ma * 100);
 }
 function vbadge(vc) {
   if (!vc) return '<span class="vbadge vb-n">—</span>';
-  const cls = vc==="ALTO" ? "vb-a" : vc==="MEDIO" ? "vb-m" : "vb-b";
+  const cls = vc === "ALTO" ? "vb-a" : vc === "MEDIO" ? "vb-m" : "vb-b";
   return `<span class="vbadge ${cls}">${vc}</span>`;
 }
-
-/* ── Color barra RSI ── */
+function trendBadge(trend) {
+  if (!trend) return '<span class="bt-n">—</span>';
+  if (trend === "alcista") return '<span class="bt-a">↑ ALCISTA</span>';
+  if (trend === "bajista") return '<span class="bt-b">↓ BAJISTA</span>';
+  return '<span class="bt-l">→ LATERAL</span>';
+}
 function rc(r) {
   if (r === null) return "#ccc";
   if (r < 35) return "#16a34a";
@@ -467,20 +562,23 @@ function rc(r) {
   return "#dc2626";
 }
 
-/* ── Status / progreso ── */
+/* ────────────────────────────────────────
+   STATUS / PROGRESO
+──────────────────────────────────────── */
 function ss(m, state="") {
   document.getElementById("statusMsg").textContent = m;
-  document.getElementById("dot").className = "dot"+(state?" "+state:"");
+  document.getElementById("dot").className = "dot" + (state ? " " + state : "");
 }
-function sp(p) { document.getElementById("pf").style.width = p+"%"; }
+function sp(p) { document.getElementById("pf").style.width = p + "%"; }
 
-/* ── Fear & Greed ── */
+/* ────────────────────────────────────────
+   FEAR & GREED
+──────────────────────────────────────── */
 function renderFNG(value, classification) {
-  const el = document.getElementById("fng");
-  el.style.display = "flex";
+  document.getElementById("fng").style.display = "flex";
   document.getElementById("fngScore").textContent = value;
   document.getElementById("fngLabel").textContent = classification;
-  document.getElementById("fngCursor").style.left = value+"%";
+  document.getElementById("fngCursor").style.left = value + "%";
   const v = parseInt(value);
   let col, action, advice;
   if (v <= 25)      { col="#dc2626"; action="Señal de compra potencial"; advice="Miedo extremo → mercado sobrevendido"; }
@@ -494,60 +592,61 @@ function renderFNG(value, classification) {
   document.getElementById("fngAdvice").textContent = advice;
 }
 
-/* ── Summary cards ── */
+/* ────────────────────────────────────────
+   SUMMARY CARDS
+──────────────────────────────────────── */
 function upSum() {
   const w = tableData.filter(c => c.rsi !== null);
   if (!w.length) return;
 
-  // RSI medio
   document.getElementById("sAvg").textContent =
-    Math.round(w.reduce((a,c) => a+c.rsi, 0) / w.length);
+    Math.round(w.reduce((a, c) => a + c.rsi, 0) / w.length);
 
-  // Señales combinadas
-  const sigs = w.map(c => combinedSig(c.rsi, c.volClass).key);
-  const nBuyS  = sigs.filter(s => s==="buy-strong").length;
-  const nBuyW  = sigs.filter(s => s==="buy").length;
-  const nSellS = sigs.filter(s => s==="sell-strong").length;
-  const nSell  = sigs.filter(s => s==="sell").length;
-  const nHold  = sigs.filter(s => s==="hold").length;
-  const nNeut  = sigs.filter(s => s==="neutral").length;
-
+  const sigs = w.map(c => combinedSig(c.rsi, c.volClass, c.trend).key);
   document.getElementById("sBuy").innerHTML =
-    `<span style="font-size:13px">●</span> Fuerte: <b>${nBuyS}</b> &nbsp;·&nbsp; Débil: <b>${nBuyW}</b>`;
+    `Fuerte: <b>${sigs.filter(s => s==="buy-strong").length}</b>&nbsp;·&nbsp;Débil: <b>${sigs.filter(s => s==="buy").length}</b>`;
   document.getElementById("sSell").innerHTML =
-    `<span style="font-size:13px">●</span> Fuerte: <b>${nSellS}</b> &nbsp;·&nbsp; Normal: <b>${nSell}</b>`;
-  document.getElementById("sNeutral").innerHTML =
-    `Mantener: <b>${nHold}</b> &nbsp;·&nbsp; Neutral: <b>${nNeut}</b>`;
+    `Fuerte: <b>${sigs.filter(s => s==="sell-strong").length}</b>&nbsp;·&nbsp;Normal: <b>${sigs.filter(s => s==="sell").length}</b>`;
 
-  // Volumen total
-  const volTotal = tableData.reduce((a,c) => a+(c.vol24h||0), 0);
-  document.getElementById("sVol").textContent = fvol(volTotal);
+  // Tendencias
+  const nA = w.filter(c => c.trend === "alcista").length;
+  const nB = w.filter(c => c.trend === "bajista").length;
+  const nL = w.filter(c => c.trend === "lateral").length;
+  document.getElementById("sTrend").innerHTML =
+    `<span style="color:var(--green)">↑ ${nA}</span>&nbsp;·&nbsp;` +
+    `<span style="color:var(--muted)">→ ${nL}</span>&nbsp;·&nbsp;` +
+    `<span style="color:var(--red)">↓ ${nB}</span>`;
 
-  // Progreso
-  document.getElementById("sProg").textContent = w.length+"/"+COINS.length;
+  document.getElementById("sVol").textContent =
+    fvol(tableData.reduce((a, c) => a + (c.vol24h||0), 0));
+  document.getElementById("sProg").textContent = w.length + "/" + COINS.length;
 }
 
-/* ── Render tabla ── */
+/* ────────────────────────────────────────
+   RENDER TABLA
+──────────────────────────────────────── */
 function renderTable() {
-  const f  = document.getElementById("filterSel").value;
-  const tb = document.getElementById("tb");
+  const fSig   = document.getElementById("filterSel").value;
+  const fTrend = document.getElementById("trendSel").value;
+  const tb     = document.getElementById("tb");
 
   const rows = tableData.filter(c => {
-    if (f === "all") return true;
-    return combinedSig(c.rsi, c.volClass).key === f;
+    const sigOk   = fSig   === "all" || combinedSig(c.rsi, c.volClass, c.trend).key === fSig;
+    const trendOk = fTrend === "all" || c.trend === fTrend;
+    return sigOk && trendOk;
   });
 
   if (!rows.length) {
-    tb.innerHTML = '<tr><td colspan="6" class="msg">Ninguna cripto con esta señal en este momento.</td></tr>';
+    tb.innerHTML = '<tr><td colspan="7" class="msg">Ninguna cripto con esta combinación de filtros.</td></tr>';
     upSum();
     return;
   }
 
   tb.innerHTML = rows.map(c => {
-    const s   = combinedSig(c.rsi, c.volClass);
-    const col = rc(c.rsi);
-    const cc  = c.chg > 0.05 ? "pos" : c.chg < -0.05 ? "neg" : "neu";
-    const cs  = (c.chg >= 0 ? "+" : "") + c.chg.toFixed(2) + "%";
+    const s    = combinedSig(c.rsi, c.volClass, c.trend);
+    const col  = rc(c.rsi);
+    const chg  = fchg(c.chg);
+    const chg7 = fchg(c.chg7d);
 
     const rsiBar = c.rsi !== null
       ? `<div class="rt">
@@ -555,6 +654,14 @@ function renderTable() {
            <div class="rf" style="width:${c.rsi}%;background:${col}"></div>
          </div>`
       : `<div class="lb-bar" style="flex:1"></div>`;
+
+    // MA vs precio
+    const ma30rel = fmaRel(c.priceUSD, c.ma30);
+    const ma7rel  = fmaRel(c.priceUSD, c.ma7);
+    const maStr   = (ma30rel !== null)
+      ? `MA7: <span class="${ma7rel>=0?"pos":"neg"}">${ma7rel>=0?"+":""}${ma7rel.toFixed(1)}%</span><br>` +
+        `MA30: <span class="${ma30rel>=0?"pos":"neg"}">${ma30rel>=0?"+":""}${ma30rel.toFixed(1)}%</span>`
+      : `<span style="color:var(--dim)">calculando...</span>`;
 
     return `<tr class="${s.row}">
       <td>
@@ -566,12 +673,22 @@ function renderTable() {
         <div class="pu">${fu(c.priceUSD)}</div>
         <div class="pe">${fe(c.priceEUR)}</div>
       </td>
-      <td><span class="cp ${cc}">${cs}</span></td>
+      <td>
+        <div class="cp-label">24H</div>
+        <div class="cp ${chg.cls}">${chg.txt}</div>
+        <div class="cp-label" style="margin-top:4px">7D</div>
+        <div class="cp ${chg7.cls}">${chg7.txt}</div>
+      </td>
       <td>
         <div class="rw">
           <span class="rn" style="color:${col}">${c.rsi !== null ? c.rsi : "…"}</span>
           ${rsiBar}
         </div>
+        ${c.sparkData ? sparkSVG(c.sparkData) : ""}
+      </td>
+      <td class="col-trend">
+        ${trendBadge(c.trend)}
+        <div class="trend-detail">${maStr}</div>
       </td>
       <td>
         <div class="pu" style="font-size:12px">${fvol(c.vol24h)}</div>
@@ -584,7 +701,9 @@ function renderTable() {
   upSum();
 }
 
-/* ── Carga principal ── */
+/* ────────────────────────────────────────
+   CARGA PRINCIPAL
+──────────────────────────────────────── */
 async function loadData() {
   const btn = document.getElementById("refreshBtn");
   const pt  = document.getElementById("pt");
@@ -602,12 +721,12 @@ async function loadData() {
     } catch(e) { console.warn("F&G:", e); }
     sp(8);
 
-    // Precios + Volumen (una sola llamada)
+    // Precios + Volumen + Cambio 7d (una sola llamada)
     ss("Obteniendo precios y volumen...", "loading");
     const syms = COINS.map(c => c.sym).join(",");
     const pr = await fetch(`${BASE}/pricemultifull?fsyms=${syms}&tsyms=USD,EUR`);
     if (!pr.ok) throw new Error("Error precios: " + pr.status);
-    const pd = await pr.json();
+    const pd  = await pr.json();
     const raw = pd.RAW || {};
     sp(18);
 
@@ -616,39 +735,49 @@ async function loadData() {
       const e = raw[c.sym]?.EUR || {};
       return {
         name:c.name, tick:c.tick, sym:c.sym, cat:c.cat,
-        priceUSD: u.PRICE            || 0,
-        priceEUR: e.PRICE            || 0,
-        chg:      u.CHANGEPCT24HOUR  || 0,
-        vol24h:   u.VOLUME24HOURTO   || 0,
+        priceUSD: u.PRICE           || 0,
+        priceEUR: e.PRICE           || 0,
+        chg:      u.CHANGEPCT24HOUR || 0,
+        chg7d:    u.CHANGEPCT7DAY   || null,
+        vol24h:   u.VOLUME24HOURTO  || 0,
         volClass: null,
-        rsi:      null
+        rsi:      null,
+        ma7:      null,
+        ma30:     null,
+        trend:    null,
+        sparkData:null
       };
     });
 
-    // Clasificar volúmenes relativos al conjunto
     classifyVolumes();
     renderTable();
 
-    // RSI secuencial (una petición por moneda)
+    // RSI + MA7 + MA30 + Sparkline — 30 cierres por moneda
     for (let i = 0; i < COINS.length; i++) {
       const coin = COINS[i];
-      ss(`RSI ${coin.name} (${i+1} de ${COINS.length})...`, "loading");
+      ss(`Analizando ${coin.name} (${i+1}/${COINS.length})…`, "loading");
       sp(18 + Math.round((i / COINS.length) * 78));
       try {
-        const r = await fetch(`${BASE}/v2/histoday?fsym=${coin.sym}&tsym=USD&limit=15`);
+        const r = await fetch(`${BASE}/v2/histoday?fsym=${coin.sym}&tsym=USD&limit=30`);
         if (r.ok) {
-          const d = await r.json();
+          const d      = await r.json();
           const closes = (d.Data?.Data || []).map(x => x.close).filter(v => v > 0);
-          if (closes.length >= 15) tableData[i].rsi = calcRSI(closes);
+          if (closes.length >= 15) {
+            tableData[i].rsi       = calcRSI(closes);
+            tableData[i].ma7       = calcMA(closes, 7);
+            tableData[i].ma30      = calcMA(closes, 30);
+            tableData[i].trend     = calcTrend(tableData[i].priceUSD, tableData[i].ma7, tableData[i].ma30);
+            tableData[i].sparkData = closes.slice(-14);
+          }
         }
-      } catch(e) { console.warn("RSI", coin.sym, e); }
+      } catch(e) { console.warn("Histórico", coin.sym, e); }
       renderTable();
       if (i < COINS.length - 1) await sleep(350);
     }
 
     sp(100);
     const now = new Date();
-    const ts = now.toLocaleTimeString("es-ES", {hour:"2-digit", minute:"2-digit"});
+    const ts  = now.toLocaleTimeString("es-ES", {hour:"2-digit", minute:"2-digit"});
     ss("Actualizado a las " + ts, "live");
     document.getElementById("lastUpdate").textContent =
       "Última actualización: " + ts + " · " + now.toLocaleDateString("es-ES");
@@ -658,7 +787,7 @@ async function loadData() {
     ss("Error: " + e.message, "err");
     if (!tableData.length)
       document.getElementById("tb").innerHTML =
-        `<tr><td colspan="6" class="msg" style="color:var(--red)">${e.message}<br>
+        `<tr><td colspan="7" class="msg" style="color:var(--red)">${e.message}<br>
         <small style="color:var(--muted)">Comprueba tu conexión e inténtalo de nuevo.</small></td></tr>`;
   }
 
